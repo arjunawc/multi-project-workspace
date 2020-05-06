@@ -14,7 +14,17 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "store-lib": [
+        "dist/store-lib/store-lib",
+        "dist/store-lib"
+      ],
+      "store-common": [
+        "dist/store-common/store-common",
+        "dist/store-common"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
