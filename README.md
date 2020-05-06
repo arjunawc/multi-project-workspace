@@ -1,27 +1,61 @@
-# StoreWorkspace
+# Angular Multiple Project Workspace
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.3.
+### Steps to to start an angular workspace with multiple projects in the same workspace and create libraries.
 
-## Development server
+Add workspace
+```
+>ng new store-workspace --createApplication="false"
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Add new applications inside workspace
+```
+>cd store-workspace
+store-workspace> ng generate application admin
+store-workspace> ng generate application client
+```
 
-## Code scaffolding
+Serve applications in workspace
+```
+store-workspace> ng serve admin
+store-workspace> ng serve client
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+Create a common library that we can share code between Applications inside workspace
+```
+store-workspace> ng generate library store-common
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Create a service in new library
+```
+store-workspace> ng generate service services/User --project store-common
+```
 
-## Running unit tests
+Export newly created library service on public-api.ts
+```
+\store-workspace\projects\store-common\src\public-api.ts
+export * from './lib/services/user.service';
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Build library
+```
+store-workspace> ng build store-common
+```
 
-## Running end-to-end tests
+Install built library (this will create package inside node_modules)
+```
+store-workspace> npm install .\dist\store-common\
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Using new library on clinet or admin app
+```
+1. In the app.module.ts import the StoreCommonModule from new library
+	    import { StoreCommonModule } from 'store-common';
+-add it to the @NgModule.imports array
+	    imports: [ .., StoreCommonModule],
+	
+2. import UserService on the component where we going to use
+	    import { UserService } from 'store-common';
+-Inject the service and call the service methods
+      constructor(private userService: UserService) {}
+```
